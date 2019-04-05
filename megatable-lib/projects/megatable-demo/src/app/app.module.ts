@@ -4,6 +4,7 @@ import { MegatableLibModule } from 'megatable-lib';
 import { AppComponent } from './app.component';
 import { SimpleComponent } from './simple/simple.component';
 import { SimpleObservableComponent } from './simple-observable/simple-observable.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -14,6 +15,7 @@ import { SimpleObservableComponent } from './simple-observable/simple-observable
   imports: [
     BrowserModule,
     MegatableLibModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
