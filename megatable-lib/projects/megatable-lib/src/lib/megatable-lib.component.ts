@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material';
+import { TableMetadata, ColumnMetadata } from './models/metadata';
 
 @Component({
   selector: 'megatable-table',
@@ -13,14 +14,9 @@ export class MegatableLibComponent implements OnInit {
   data: any[] | Observable<any[]>;
 
   @Input()
-  name: string;
+  metadata: TableMetadata;
 
-  cols = [{ name: 'col1', displayName: 'Column 1' }, { name: 'col2', displayName: 'Column 2'}];
-
-  dataSource = new MatTableDataSource<any>([
-    { col1: 'ABC', col2: '123' },
-    { col1: 'DEF', col2: '456' },
-  ]);
+  dataSource = new MatTableDataSource<any>([]);
 
   constructor() {
 
@@ -29,23 +25,34 @@ export class MegatableLibComponent implements OnInit {
   ngOnInit() {
     if (Array.isArray(this.data)) {
       this.log('data type is array');
+
+      this.dataSource = new MatTableDataSource(this.data);
     }
 
     if (this.data instanceof Observable) {
       this.log('data type is observable');
+      this.data.subscribe((newData: any[]) => {
+        this.dataSource = new MatTableDataSource(newData);
+      });
     }
+
+
   }
 
   getColumns() {
-    return this.cols;
+    return this.metadata.columns;
   }
 
   getDisplayColumns() {
-    return this.getColumns().map((col) => col.name);
+    return this.getColumns().map((col: ColumnMetadata) => col.displayName);
+  }
+
+  getColumnNames() {
+    return this.getColumns().map((col: ColumnMetadata) => col.name);
   }
 
   log(message: string) {
-    console.log(`[MEGA] (${this.name}) ${message}`);
+    console.log(`[MEGA] (${this.metadata.name}) ${message}`);
   }
 
 }

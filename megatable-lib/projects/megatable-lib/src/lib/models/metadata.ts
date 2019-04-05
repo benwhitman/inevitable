@@ -1,26 +1,27 @@
 export enum DataType {
-    DEFAULT = 'default',
-    INT = 'int',
-    FLOAT = 'float',
-    BOOLEAN = 'boolean',
-    CURRENCY = 'currency',
-    BASE64IMG = 'base64img'
+    String = 'string',
+    Int = 'int',
+    Float = 'float',
+    Boolean = 'boolean',
+    Currency = 'currency',
+    Base64Image = 'base64img'
 }
 
 export class ColumnMetadata {
     public name: string;
     public displayName: string;
-    public includeInGlobalFilter: boolean;
-    public allowSort: boolean;
-    public dataType: DataType;
+    public includeInGlobalFilter?: boolean;
+    public allowSort?: boolean;
+    public dataType?: DataType;
+    public currencyCode?: string;
 
     // optional custom renderer function to use instead of the built-in one
     public renderer?: (cellData: any) => string;
 }
 
 export class TableMetadata {
-    public Name: string;
-    public Heading: string;
-    public Pagination: string;
-    public Columns: ColumnMetadata[];
+    public name: string;
+    public heading: string;
+    public pagination: number[] = [10, 20, 30];
+    public columns: ColumnMetadata[];
 }

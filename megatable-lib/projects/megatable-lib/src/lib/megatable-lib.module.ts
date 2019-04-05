@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { MegatableLibComponent } from './megatable-lib.component';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule, MatSortModule, MatToolbarModule } from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,9 @@ import { CommonModule } from '@angular/common';
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
+    MatSortModule,
     MatTableModule,
+    MatToolbarModule
   ],
   exports: [MegatableLibComponent]
 })
