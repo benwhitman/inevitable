@@ -11,6 +11,9 @@ export class MegatableLibComponent implements OnInit {
   @Input()
   data: any[] | Observable<any[]>;
 
+  @Input()
+  name: string;
+
   constructor() {
 
   }
@@ -26,7 +29,7 @@ export class MegatableLibComponent implements OnInit {
   }
 
   log(message: string) {
-    console.log(`[MEGA] ${message}`);
+    console.log(`[MEGA] (${this.name}) ${message}`);
   }
 
 }
