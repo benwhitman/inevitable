@@ -5,8 +5,16 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
 
+/*
+cell renderer components
+*/
+import { DefaultCellRendererComponent } from '../lib/cell-renderers/default/default-cell-renderer.component';
+
 @NgModule({
-  declarations: [MegatableLibComponent],
+  declarations: [
+    MegatableLibComponent,
+    DefaultCellRendererComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
