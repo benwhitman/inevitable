@@ -21,7 +21,8 @@ export class SimpleComponent implements OnInit {
 
   public myMetadata: TableMetadata = {
     name: 'ice-cream',
-    heading: 'Ice Cream',
+    heading: 'Simple Table',
+    subHeading: 'Table data is just a plain array',
     pagination: [10, 20, 40],
     columns: [
       {

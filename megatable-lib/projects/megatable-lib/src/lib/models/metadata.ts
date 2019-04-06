@@ -22,6 +22,7 @@ export class ColumnMetadata {
 export class TableMetadata {
     public name: string;
     public heading: string;
+    public subHeading?: string;
     public pagination: number[] = [10, 20, 30];
     public columns: ColumnMetadata[];
 }

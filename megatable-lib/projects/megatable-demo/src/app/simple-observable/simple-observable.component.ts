@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { RaceCar } from '../models/race-car';
+import { DataType, TableMetadata } from 'megatable-lib';
 
 @Component({
   selector: 'app-simple-observable',
@@ -24,6 +25,42 @@ export class SimpleObservableComponent implements OnInit {
     }
   ]);
 
+  public myMetadata: TableMetadata = {
+    name: 'formula-27',
+    heading: 'Simple Table from Observable (BehaviorSubject)',
+    subHeading: 'Each observation refreshes the whole table',
+    pagination: [10, 20, 40],
+    columns: [
+      {
+        name: 'driver',
+        displayName: 'Driver',
+        allowSort: false,
+        dataType: DataType.String,
+      },
+      {
+        name: 'racePosition',
+        displayName: 'Position',
+        includeInGlobalFilter: false,
+        allowSort: true,
+        dataType: DataType.Int,
+      },
+      {
+        name: 'remainingFuel',
+        displayName: 'Fuel',
+        includeInGlobalFilter: false,
+        allowSort: true,
+        dataType: DataType.Int,
+      },
+      {
+        name: 'pitstop',
+        displayName: 'In the pits?',
+        includeInGlobalFilter: false,
+        allowSort: true,
+        dataType: DataType.Boolean,
+      },
+    ]
+  };
+
   constructor() { }
 
   ngOnInit() {
@@ -35,9 +72,6 @@ export class SimpleObservableComponent implements OnInit {
       newPositions.forEach((np, i) => newData[i].racePosition = np);
 
       newData.forEach((r: RaceCar) => {
-        if (r.remainingFuel === 0) {
-          r.pitstop = true;
-        }
 
         if (r.pitstop && r.remainingFuel < 100) {
           r.remainingFuel += 20;
@@ -46,6 +80,18 @@ export class SimpleObservableComponent implements OnInit {
         if (r.pitstop && r.remainingFuel === 100) {
           r.pitstop = false;
         }
+
+        if (!r.pitstop) {
+          r.remainingFuel -= 10 * Math.floor(5 * Math.random());
+          if (r.remainingFuel < 0) {
+            r.remainingFuel = 0;
+          }
+        }
+
+        if (r.remainingFuel === 0) {
+          r.pitstop = true;
+        }
+        
       });
 
       this.myObservable.next(newData);

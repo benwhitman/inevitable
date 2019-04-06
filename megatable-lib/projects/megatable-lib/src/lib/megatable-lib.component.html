@@ -1,5 +1,6 @@
 <div>
-    <h1>{{ metadata.name }}</h1>
+    <h1>{{ metadata.heading }}</h1>
+    <h2 *ngIf="metadata.subHeading">{{ metadata.subHeading }}</h2>
 
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort cdkDropListGroup>
 
