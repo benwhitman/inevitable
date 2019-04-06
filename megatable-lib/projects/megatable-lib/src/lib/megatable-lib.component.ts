@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
 import { TableMetadata, ColumnMetadata, DataType } from './models/metadata';
 import { TableConfig } from './models/table-config';
+import { CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'megatable-table',
@@ -10,6 +11,8 @@ import { TableConfig } from './models/table-config';
   styles: ['./megatable-lib.component.scss']
 })
 export class MegatableLibComponent implements OnInit {
+
+  constructor() { }
 
   /*
   The data, which can be either an array of objects, or an observable containing such an array
@@ -40,10 +43,8 @@ export class MegatableLibComponent implements OnInit {
 
   dataSource = new MatTableDataSource<any>([]);
 
-  constructor() {
-
-  }
-
+  // previous column index for drag n drop
+  previous: number;
 
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -66,12 +67,7 @@ export class MegatableLibComponent implements OnInit {
       });
     }
 
-    this.log(`events subscribed to: ${this.select.observers.length > 0 ? 'select ' : ''}` +
-              `${this.click.observers.length > 0 ? 'click ' : ''}` +
-              `${this.hover.observers.length > 0 ? 'hover ' : ''}` +
-              `${this.select.observers.length + this.click.observers.length + this.hover.observers.length === 0 ? 'none' : ''}`);
-
-
+    this.log(`events subscribed to: ${this.getFeatures().join(' ') || 'none'}`);
   }
 
   /*
@@ -91,52 +87,42 @@ export class MegatableLibComponent implements OnInit {
           displayName: key,
           dataType: DataType.String
         };
-
         return column;
       });
     }
-
-  }
-
-  getDisplayColumns() {
-    return this.getColumns().map((col: ColumnMetadata) => col.displayName);
-  }
-
-  getColumnNames() {
-    return this.getColumns().map((col: ColumnMetadata) => col.name);
   }
 
   /*
-  Functions to establish whether various bits of functionality are enabled
+  Functions to get the array of display names and column names (i.e. keys)
   */
-  getMultiSelectEnabled() {
-    return this.select.observers.length > 0;
-  }
+  getDisplayColumns = () => this.getColumns().map((col: ColumnMetadata) => col.displayName);
+  getColumnNames = () => this.getColumns().map((col: ColumnMetadata) => col.name);
 
-  getHoverEnabled() {
-    return this.hover.observers.length > 0;
-  }
-
-  getClickEnabled() {
-    return this.click.observers.length > 0;
-  }
+  /*
+  Functions relating to which features are selected
+  */
+  isEnabled = (feature: string) => this[feature].observers.length > 0;
+  getFeatures = () => ['select', 'click', 'hover'].filter((feature: string) => this.isEnabled(feature));
 
   /*
   Event emitters
   */
-  emitClickEvent($event) {
-    this.click.emit($event);
-  }
+  emitClickEvent = ($event: any) => this.click.emit($event);
+  emitHoverEvent = ($event: any) => this.hover.emit($event);
 
-  emitHoverEvent($event) {
-    this.hover.emit($event);
+  /*
+  Drag n Drop related functions
+  */
+  dragStarted = (event: CdkDragStart, index: number) => this.previous = index;
+
+  dropListDropped(event: CdkDropList, index: number) {
+    if (event) {
+      moveItemInArray(this.metadata.columns, this.previous, index);
+    }
   }
 
   /*
   Generic logging function
   */
-  log(message: string) {
-    console.log(`[MEGA] (${this.metadata.name}) ${message}`);
-  }
-
+  log = (message: string) => console.log(`[MEGA] (${this.metadata.name}) ${message}`);
 }

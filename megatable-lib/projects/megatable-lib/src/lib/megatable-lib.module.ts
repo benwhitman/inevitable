@@ -4,6 +4,7 @@ import { MatTableModule, MatSortModule, MatToolbarModule, MatPaginatorModule } f
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 /*
 cell renderer components
@@ -19,6 +20,7 @@ import { DefaultCellRendererComponent } from '../lib/cell-renderers/default/defa
     BrowserModule,
     BrowserAnimationsModule,
     CommonModule,
+    DragDropModule,
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,

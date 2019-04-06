@@ -1,11 +1,22 @@
 <div>
     <h1>{{ metadata.name }}</h1>
 
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort cdkDropListGroup>
 
-        <ng-container *ngFor="let col of getColumns()" [matColumnDef]="col.name">
+        <ng-container *ngFor="let col of getColumns(); index as i" [matColumnDef]="col.name">
             <!-- header -->
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ col.displayName }}</th>
+            <th 
+                mat-header-cell 
+                *matHeaderCellDef 
+                mat-sort-header
+                cdkDropList
+                cdkDropListLockAxis="x"
+                cdkDropListOrientation="horizontal"
+                (cdkDropListDropped)="dropListDropped($event, i)"
+                cdkDrag
+                (cdkDragStarted)="dragStarted($event, i)"
+                [cdkDragData]="{name: col.name, columnIndex: i}" 
+            >{{ col.displayName }}</th>
 
             <!-- row cell -->
             <td mat-cell *matCellDef="let item">
