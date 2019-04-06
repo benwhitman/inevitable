@@ -22,6 +22,12 @@ export class SimpleObservableComponent implements OnInit {
       racePosition: 2,
       remainingFuel: 100,
       pitstop: false
+    },
+    {
+      driver: 'Lewis Fabilton',
+      racePosition: 3,
+      remainingFuel: 100,
+      pitstop: false
     }
   ]);
 
@@ -91,7 +97,6 @@ export class SimpleObservableComponent implements OnInit {
         if (r.remainingFuel === 0) {
           r.pitstop = true;
         }
-        
       });
 
       this.myObservable.next(newData);

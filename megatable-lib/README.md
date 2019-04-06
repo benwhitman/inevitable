@@ -1,14 +1,23 @@
-# MegatableLib
+# Megatable
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.6.
+General purpose data table component based on @angular/material and @angular/cdk.
 
-## Development server
+This table component is designed to provide the features that cover most uses of displaying a flexible table in an Angular app.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+* Data source can be a ```YourDataType[]``` or ```Observable<YourDataType[]>```
+* Events for row click, hover, selection change
+* Ability for the user to re-order columns via Drag n Drop
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## TODO
+
+* Column filters
+* Global filter
+* Ability to persist settings, filters, sort etc.,
+* Implement event emitters
+* Rich filter expression language
+* Custom cell renderer via user function
 
 ## Build
 
