@@ -1,1 +1,2 @@
-<span>{{ data }}</span>
+<span *ngIf="!renderer">{{ data }}</span>
+<span *ngIf="renderer" [innerHTML]="renderer"></span>

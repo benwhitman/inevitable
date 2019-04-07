@@ -12,6 +12,9 @@ export class DefaultCellRendererComponent {
     @Input()
     data: string;
 
+    @Input()
+    renderer: (cellData: any) => string;
+
     constructor() {
 
     }

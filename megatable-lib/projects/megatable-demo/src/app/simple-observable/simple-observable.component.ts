@@ -36,6 +36,8 @@ export class SimpleObservableComponent implements OnInit {
     heading: 'Simple Table from Observable (BehaviorSubject)',
     subHeading: 'Each observation refreshes the whole table',
     pagination: [10, 20, 40],
+    defaultSortColumn: 'racePosition',
+    defaultSortColumnDirection: 'asc',
     columns: [
       {
         name: 'driver',

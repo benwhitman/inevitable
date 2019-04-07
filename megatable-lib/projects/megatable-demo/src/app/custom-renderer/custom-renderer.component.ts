@@ -4,11 +4,11 @@ import { IceCream } from '../models/ice-cream';
 import { TableMetadata, DataType } from 'megatable-lib';
 
 @Component({
-  selector: 'app-simple',
-  templateUrl: './simple.component.html',
-  styleUrls: ['./simple.component.css']
+  selector: 'app-custom-renderer',
+  templateUrl: './custom-renderer.component.html',
+  styleUrls: ['./custom-renderer.component.css']
 })
-export class SimpleComponent implements OnInit {
+export class CustomRendererComponent implements OnInit {
 
   public myData: IceCream[] = [
     {
@@ -20,10 +20,9 @@ export class SimpleComponent implements OnInit {
   ];
 
   public myMetadata: TableMetadata = {
-    name: 'ice-cream',
-    heading: 'Simple Table',
-    subHeading: 'Table data is just a plain array',
-    pagination: [10, 20, 40],
+    name: 'custom-renderer',
+    heading: 'Custom Renderer',
+    subHeading: 'Here we are showing a random image from Flickr',
     columns: [
       {
         name: 'id',
@@ -37,6 +36,7 @@ export class SimpleComponent implements OnInit {
         includeInGlobalFilter: true,
         allowSort: true,
         dataType: DataType.String,
+        renderer: this.randomImage
       },
       {
         name: 'calories',
@@ -59,6 +59,10 @@ export class SimpleComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+  }
+
+  randomImage(cellData: IceCream) {
+    return '<img src="https://loremflickr.com/320/240" />';
   }
 
 }

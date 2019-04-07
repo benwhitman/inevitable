@@ -46,12 +46,32 @@ export class MegatableLibComponent implements OnInit {
   // previous column index for drag n drop
   previous: number;
 
+  // default sorting
+  matSortActive: string;
+  matSortDirection: string;
+
+  // all metadata validation checks passed
+  public valid = false;
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
+
+    const keyList: string = this.getKeyColumnNames().join(' ') || 'none';
+
+    this.valid = this.validateMetadata().length === 0;
+
+    if (this.validateMetadata().length > 0) {
+      this.log(`The following metadata validation errors occurred: ${this.validateMetadata().join(', ')}`, 'error');
+    }
+
+    this.matSortActive = this.metadata.defaultSortColumn;
+    this.matSortDirection = this.metadata.defaultSortColumnDirection;
+
     if (Array.isArray(this.data)) {
-      this.log('data type is array');
+
+      this.log(`Data type is Array. Key columns: ${keyList}`);
 
       this.dataSource = new MatTableDataSource(this.data);
       this.dataSource.sort = this.sort;
@@ -59,7 +79,8 @@ export class MegatableLibComponent implements OnInit {
     }
 
     if (this.data instanceof Observable) {
-      this.log('data type is observable');
+      this.log(`Data type is Observable. Key columns: ${keyList}`);
+
       this.data.subscribe((newData: any[]) => {
         this.dataSource = new MatTableDataSource(newData);
         this.dataSource.sort = this.sort;
@@ -97,6 +118,23 @@ export class MegatableLibComponent implements OnInit {
   */
   getDisplayColumns = () => this.getColumns().map((col: ColumnMetadata) => col.displayName);
   getColumnNames = () => this.getColumns().map((col: ColumnMetadata) => col.name);
+  getKeyColumnNames = () => this.metadata.columns
+                                  .filter((c: ColumnMetadata) => c.isKey)
+                                  .map((c: ColumnMetadata) => c.name)
+
+  /*
+  Validation
+  */
+  validateMetadata(): string[] {
+    const errors = [];
+
+    const isDataModificationColumns = this.metadata.columns.filter((c: ColumnMetadata) => c.isDataModification);
+    if (isDataModificationColumns.length > 1) {
+      errors.push(`The following columns are configured with isDataModification:
+      ${isDataModificationColumns.join(' ')}. You must select at most one`);
+    }
+    return errors;
+  }
 
   /*
   Functions relating to which features are selected
@@ -124,5 +162,5 @@ export class MegatableLibComponent implements OnInit {
   /*
   Generic logging function
   */
-  log = (message: string) => console.log(`[MEGA] (${this.metadata.name}) ${message}`);
+  log = (message: string, severity: string = 'log') => console[severity](`[MEGA] (${this.metadata.name}) ${message}`);
 }

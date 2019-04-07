@@ -18,6 +18,7 @@ This table component is designed to provide the features that cover most uses of
 * Implement event emitters
 * Rich filter expression language
 * Custom cell renderer via user function
+* Data updates to individual rows
 
 ## Build
 
