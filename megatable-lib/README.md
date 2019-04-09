@@ -4,6 +4,9 @@ General purpose data table component based on @angular/material and @angular/cdk
 
 This table component is designed to provide the features that cover most uses of displaying a flexible table in an Angular app.
 
+## Install
+* ```npm install --save megatable @angular/material @angular/cdk hammerjs```
+* Add an Angular Material Theme to your projects styles.css e.g. ```@import "~@angular/material/prebuilt-themes/indigo-pink.css";```
 ## Features
 
 * Data source can be a ```YourDataType[]``` or ```Observable<YourDataType[]>```
