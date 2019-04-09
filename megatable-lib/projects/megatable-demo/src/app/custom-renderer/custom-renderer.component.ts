@@ -62,7 +62,7 @@ export class CustomRendererComponent implements OnInit {
   }
 
   randomImage(cellData: IceCream) {
-    return '<img src="https://loremflickr.com/320/240" />';
+    return `<b>${cellData.flavour}</b><br/><img src="https://loremflickr.com/320/240" />`;
   }
 
 }
