@@ -16,6 +16,6 @@ export class DefaultCellRendererComponent {
     renderer: (cellData: any) => string;
 
     constructor() {
-      console.log('MEGA renderer', this.renderer);
+      console.log('inevitable renderer', this.renderer);
     }
 }

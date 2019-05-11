@@ -1,8 +1,12 @@
 {
   "name": "inevitable",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "author": "Ben Whitman",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/benwhitman/inevitable"
+  },
   "peerDependencies": {
     "@angular/common": "^7.2.0",
     "@angular/core": "^7.2.0",
