@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IceCream } from '../models/ice-cream';
 
-import { TableMetadata, DataType } from './node_modules/inevitable';
+import { TableMetadata, DataType } from 'inevitable';
 
 @Component({
   selector: 'app-custom-renderer',

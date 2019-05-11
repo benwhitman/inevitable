@@ -1,11 +1,15 @@
 {
   "name": "inevitable",
   "version": "0.0.1",
-  "keywords" :["table","datatable","material"],
-  "license" : "SEE LICENSE IN LICENSE",
+  "keywords": [
+    "table",
+    "datatable",
+    "material"
+  ],
+  "license": "SEE LICENSE IN LICENSE",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/benwhitman/inevitable"
+    "type": "git",
+    "url": "https://github.com/benwhitman/inevitable"
   },
   "scripts": {
     "ng": "ng",

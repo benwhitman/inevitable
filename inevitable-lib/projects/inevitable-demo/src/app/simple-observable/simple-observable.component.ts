@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { RaceCar } from '../models/race-car';
-import { DataType, TableMetadata } from './node_modules/inevitable';
+import { DataType, TableMetadata } from 'inevitable';
 
 @Component({
   selector: 'app-simple-observable',
