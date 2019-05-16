@@ -135,14 +135,12 @@ export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
       inputDataObservable,
       globalFilterInputChanges
     ).subscribe(([latestData, latestGlobalFilter]) => {
-      // console.log("latest global filter: ", latestGlobalFilter);
-      // console.log("latest data", latestData);
-
       if (latestGlobalFilter.length > 0) {
         latestData = latestData.filter(row =>
           Object.values(row).some(
             (value: any) =>
-              typeof value === "string" && value.includes(latestGlobalFilter)
+              typeof value === "string" &&
+              value.toLowerCase().includes(latestGlobalFilter.toLowerCase())
           )
         );
       }
@@ -154,15 +152,6 @@ export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
   }
 
   ngOnInit() {
-    // // merge the incoming data stream with
-    // inputDataObservable.pipe(
-    //   mergeMap(dataMessage => this.applyFilters(dataMessage))
-    // ).subscribe((newData: any[]) => {
-    //   this.dataSource = new MatTableDataSource(newData);
-    //   this.dataSource.sort = this.sort;
-    //   this.dataSource.paginator = this.paginator;
-    // });
-
     this.log(`events subscribed to: ${this.getFeatures().join(" ") || "none"}`);
 
     this.log(`config: ${JSON.stringify(this.config)}`);
@@ -176,6 +165,7 @@ export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
         this.globalFilterLabel =
           "filter by " +
           this.getColumns()
+            .filter((column: ColumnMetadata) => column.includeInGlobalFilter)
             .map((column: ColumnMetadata) => column.displayName)
             .join(", ");
       } else {

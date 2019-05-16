@@ -21,18 +21,21 @@ export class GlobalFilterSelectiveColsComponent implements OnInit {
   >([
     {
       driver: "Rads Mikkelson",
+      nationality: "Finland",
       racePosition: 1,
       remainingFuel: 100,
       pitstop: false
     },
     {
       driver: "Chris Dunkelpump",
+      nationality: "Germany",
       racePosition: 2,
       remainingFuel: 100,
       pitstop: false
     },
     {
       driver: "Lewis Fabilton",
+      nationality: "United Kingdom",
       racePosition: 3,
       remainingFuel: 100,
       pitstop: false
@@ -52,6 +55,13 @@ export class GlobalFilterSelectiveColsComponent implements OnInit {
         name: "driver",
         displayName: "Driver",
         includeInGlobalFilter: true,
+        allowSort: false,
+        dataType: DataType.String
+      },
+      {
+        name: "nationality",
+        displayName: "Nationality",
+        includeInGlobalFilter: false,
         allowSort: false,
         dataType: DataType.String
       },
