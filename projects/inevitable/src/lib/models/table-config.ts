@@ -1,3 +1,6 @@
 export interface TableConfig {
-    showToolbar: boolean;
+    showToolbar?: boolean;
+
+    // show a global filter search box above the table
+    showGlobalFilter?: boolean;
 }

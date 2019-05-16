@@ -1,19 +1,39 @@
-import { Component, Input, OnInit, ViewChild, Output, EventEmitter } from '@angular/core';
-import { Observable } from 'rxjs';
-import { MatTableDataSource, MatSort, MatPaginator } from '@angular/material';
-import { TableMetadata, ColumnMetadata, DataType } from './models/metadata';
-import { TableConfig } from './models/table-config';
-import { CdkDragStart, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+  Output,
+  EventEmitter,
+  ElementRef
+} from "@angular/core";
+import { Observable, of, fromEvent, combineLatest, Subscription } from "rxjs";
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+  mergeMap
+} from "rxjs/operators";
+import { MatTableDataSource, MatSort, MatPaginator } from "@angular/material";
+import { TableMetadata, ColumnMetadata, DataType } from "./models/metadata";
+import { TableConfig } from "./models/table-config";
+import {
+  CdkDragStart,
+  CdkDropList,
+  moveItemInArray
+} from "@angular/cdk/drag-drop";
 
 @Component({
   // tslint:disable-next-line:component-selector
-  selector: 'inevitable',
-  templateUrl: './inevitable.component.html',
-  styles: ['./inevitable.component.scss']
+  selector: "inevitable",
+  templateUrl: "./inevitable.component.html",
+  styles: ["./inevitable.component.scss"]
 })
-export class InevitableComponent implements OnInit {
-
-  constructor() { }
+export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
+  constructor() {}
 
   /*
   The data, which can be either an array of objects, or an observable containing such an array
@@ -28,7 +48,7 @@ export class InevitableComponent implements OnInit {
   metadata: TableMetadata;
 
   @Input()
-  config: TableConfig;
+  config: TableConfig = {};
 
   /*
   Event emitters for select (multi-select), hover and click events
@@ -54,42 +74,118 @@ export class InevitableComponent implements OnInit {
   // all metadata validation checks passed
   public valid = false;
 
+  public globalFilter: string;
+  public globalFilterLabel: string;
+
+  // all the filter functions to apply to the data
+  // this will contain the global filter function as well as any column-based filters
+  // public filters: Observable<(data: any) => boolean> = new Observable();
+  // public globalFilterObservable = new Observable();
+
+  @ViewChild("globalFilterInput")
+  public globalFilterInput: ElementRef;
+
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  ngOnInit() {
+  subscription: Subscription;
 
-    const keyList: string = this.getKeyColumnNames().join(' ') || 'none';
+  ngAfterViewInit(): void {
+    const globalFilterInputChanges = fromEvent<any>(
+      this.globalFilterInput.nativeElement,
+      "keyup"
+    ).pipe(
+      map(event => event.target.value),
+      startWith(""),
+      debounceTime(400),
+      distinctUntilChanged()
+    );
+    const keyList: string = this.getKeyColumnNames().join(" ") || "none";
 
     this.valid = this.validateMetadata().length === 0;
 
     if (this.validateMetadata().length > 0) {
-      this.log(`The following metadata validation errors occurred: ${this.validateMetadata().join(', ')}`, 'error');
+      this.log(
+        `The following metadata validation errors occurred: ${this.validateMetadata().join(
+          ", "
+        )}`,
+        "error"
+      );
     }
 
     this.matSortActive = this.metadata.defaultSortColumn;
     this.matSortDirection = this.metadata.defaultSortColumnDirection;
 
-    if (Array.isArray(this.data)) {
+    // if the data was supplied as an array wrap it in an observable
+    let inputDataObservable: Observable<any>;
 
+    if (Array.isArray(this.data)) {
       this.log(`Data type is Array. Key columns: ${keyList}`);
 
-      this.dataSource = new MatTableDataSource(this.data);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
+      inputDataObservable = of(this.data);
     }
 
     if (this.data instanceof Observable) {
-      this.log(`Data type is Observable. Key columns: ${keyList}`);
+      inputDataObservable = this.data;
 
-      this.data.subscribe((newData: any[]) => {
-        this.dataSource = new MatTableDataSource(newData);
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-      });
+      this.log(`Data type is Observable. Key columns: ${keyList}`);
     }
 
-    this.log(`events subscribed to: ${this.getFeatures().join(' ') || 'none'}`);
+    this.subscription = combineLatest(
+      inputDataObservable,
+      globalFilterInputChanges
+    ).subscribe(([latestData, latestGlobalFilter]) => {
+      console.log("latest global filter: ", latestGlobalFilter);
+      console.log("latest data", latestData);
+
+      if (latestGlobalFilter.length > 0) {
+        latestData = latestData.filter(row =>
+          Object.values(row).some(
+            (value: any) =>
+              typeof value === "string" && value.includes(latestGlobalFilter)
+          )
+        );
+      }
+
+      this.dataSource = new MatTableDataSource(latestData);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    });
+  }
+
+  ngOnInit() {
+    // // merge the incoming data stream with
+    // inputDataObservable.pipe(
+    //   mergeMap(dataMessage => this.applyFilters(dataMessage))
+    // ).subscribe((newData: any[]) => {
+    //   this.dataSource = new MatTableDataSource(newData);
+    //   this.dataSource.sort = this.sort;
+    //   this.dataSource.paginator = this.paginator;
+    // });
+
+    this.log(`events subscribed to: ${this.getFeatures().join(" ") || "none"}`);
+
+    this.log(`config: ${JSON.stringify(this.config)}`);
+
+    if (this.config.showGlobalFilter) {
+      if (
+        this.getColumns().some(
+          (column: ColumnMetadata) => column.includeInGlobalFilter
+        )
+      ) {
+        this.globalFilterLabel =
+          "filter by " +
+          this.getColumns()
+            .map((column: ColumnMetadata) => column.displayName)
+            .join(", ");
+      } else {
+        this.globalFilterLabel = "filter by anything...";
+      }
+    }
+  }
+
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
   }
 
   /*
@@ -117,11 +213,38 @@ export class InevitableComponent implements OnInit {
   /*
   Functions to get the array of display names and column names (i.e. keys)
   */
-  getDisplayColumns = () => this.getColumns().map((col: ColumnMetadata) => col.displayName);
-  getColumnNames = () => this.getColumns().map((col: ColumnMetadata) => col.name);
-  getKeyColumnNames = () => this.metadata.columns
-                                  .filter((c: ColumnMetadata) => c.isKey)
-                                  .map((c: ColumnMetadata) => c.name)
+  getDisplayColumns = () =>
+    this.getColumns().map((col: ColumnMetadata) => col.displayName);
+  getColumnNames = () =>
+    this.getColumns().map((col: ColumnMetadata) => col.name);
+  getKeyColumnNames = () =>
+    this.metadata.columns
+      .filter((c: ColumnMetadata) => c.isKey)
+      .map((c: ColumnMetadata) => c.name);
+
+  // globalFilterKeyup($event) {
+  //   this.log(`keyup ${$event.target.value}`);
+
+  //   // set the global filter to a function which returns only rows which
+  //   // have a value in at least one of the rows values
+  //   this.filters[0] =
+  //     (row: any) => Object.values(row)
+  //                   .some((value: any) => value.includes($event.target.value));
+
+  //   this.globalFilterObservable.;
+  // }
+
+  /*
+  Apply all of the filters to the incoming data (array)
+  */
+  // applyFilters(data: any[]): any[] {
+  //   //
+  //   let filteredData = data;
+
+  //   this.filters.forEach((filter) => filteredData = filteredData.filter(filter));
+
+  //   return filteredData;
+  // }
 
   /*
   Validation
@@ -129,10 +252,12 @@ export class InevitableComponent implements OnInit {
   validateMetadata(): string[] {
     const errors = [];
 
-    const isDataModificationColumns = this.metadata.columns.filter((c: ColumnMetadata) => c.isDataModification);
+    const isDataModificationColumns = this.metadata.columns.filter(
+      (c: ColumnMetadata) => c.isDataModification
+    );
     if (isDataModificationColumns.length > 1) {
       errors.push(`The following columns are configured with isDataModification:
-      ${isDataModificationColumns.join(' ')}. You must select at most one`);
+      ${isDataModificationColumns.join(" ")}. You must select at most one`);
     }
     return errors;
   }
@@ -141,7 +266,10 @@ export class InevitableComponent implements OnInit {
   Functions relating to which features are selected
   */
   isEnabled = (feature: string) => this[feature].observers.length > 0;
-  getFeatures = () => ['select', 'click', 'hover'].filter((feature: string) => this.isEnabled(feature));
+  getFeatures = () =>
+    ["select", "click", "hover"].filter((feature: string) =>
+      this.isEnabled(feature)
+    );
 
   /*
   Event emitters
@@ -152,7 +280,7 @@ export class InevitableComponent implements OnInit {
   /*
   Drag n Drop related functions
   */
-  dragStarted = (event: CdkDragStart, index: number) => this.previous = index;
+  dragStarted = (event: CdkDragStart, index: number) => (this.previous = index);
 
   dropListDropped(event: CdkDropList, index: number) {
     if (event) {
@@ -163,5 +291,6 @@ export class InevitableComponent implements OnInit {
   /*
   Generic logging function
   */
-  log = (message: string, severity: string = 'log') => console[severity](`[inevitable] (${this.metadata.name}) ${message}`);
+  log = (message: string, severity: string = "log") =>
+    console[severity](`[inevitable] (${this.metadata.name}) ${message}`);
 }

@@ -23,6 +23,10 @@ export class ColumnMetadata {
 
     // optional custom renderer function to use instead of the built-in one
     public renderer?: (cellData: any) => string;
+
+    constructor() {
+        this.includeInGlobalFilter = true;
+    }
 }
 
 export class TableMetadata {
@@ -37,4 +41,5 @@ export class TableMetadata {
 
     // either 'asc' or 'desc'
     public defaultSortColumnDirection?: string;
+
 }

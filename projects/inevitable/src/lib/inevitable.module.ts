@@ -1,6 +1,13 @@
 import { NgModule } from '@angular/core';
 import { InevitableComponent } from './inevitable.component';
-import { MatTableModule, MatSortModule, MatToolbarModule, MatPaginatorModule } from '@angular/material';
+import {
+  MatFormFieldModule,
+  MatInputModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatTableModule,
+  MatToolbarModule,
+} from '@angular/material';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { CommonModule } from '@angular/common';
@@ -21,6 +28,8 @@ import { DefaultCellRendererComponent } from './cell-renderers/default/default-c
     BrowserAnimationsModule,
     CommonModule,
     DragDropModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatPaginatorModule,
     MatSortModule,
     MatTableModule,

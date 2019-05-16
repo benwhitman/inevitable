@@ -2,6 +2,10 @@
     <h1>{{ metadata.heading }}</h1>
     <h2 *ngIf="metadata.subHeading">{{ metadata.subHeading }}</h2>
 
+    <mat-form-field *ngIf="config.showGlobalFilter">
+        <input #globalFilterInput matInput [placeholder]="globalFilterLabel">
+    </mat-form-field>
+
     <table 
         mat-table 
         [dataSource]="dataSource" 
