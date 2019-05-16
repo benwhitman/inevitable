@@ -135,8 +135,8 @@ export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
       inputDataObservable,
       globalFilterInputChanges
     ).subscribe(([latestData, latestGlobalFilter]) => {
-      console.log("latest global filter: ", latestGlobalFilter);
-      console.log("latest data", latestData);
+      // console.log("latest global filter: ", latestGlobalFilter);
+      // console.log("latest data", latestData);
 
       if (latestGlobalFilter.length > 0) {
         latestData = latestData.filter(row =>
