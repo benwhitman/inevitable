@@ -61,7 +61,7 @@ export class GlobalFilterSelectiveColsComponent implements OnInit {
       {
         name: "nationality",
         displayName: "Nationality",
-        includeInGlobalFilter: false,
+        includeInGlobalFilter: true,
         allowSort: false,
         dataType: DataType.String
       },

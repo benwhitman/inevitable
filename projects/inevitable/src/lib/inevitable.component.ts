@@ -136,9 +136,20 @@ export class InevitableComponent implements AfterViewInit, OnDestroy, OnInit {
       globalFilterInputChanges
     ).subscribe(([latestData, latestGlobalFilter]) => {
       if (latestGlobalFilter.length > 0) {
+        let filterableColumns = [];
+        this.metadata.columns.forEach((col, index) => {
+          if (col.includeInGlobalFilter) {
+            filterableColumns.push(index);
+          }
+        });
+
         latestData = latestData.filter(row =>
+          // only apply global filter to those columns
+          // which are set accordingly in the metadata
+
           Object.values(row).some(
-            (value: any) =>
+            (value: any, index) =>
+              filterableColumns.includes(index) &&
               typeof value === "string" &&
               value.toLowerCase().includes(latestGlobalFilter.toLowerCase())
           )
