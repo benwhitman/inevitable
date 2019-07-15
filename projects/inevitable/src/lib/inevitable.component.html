@@ -6,6 +6,17 @@
     <input #globalFilterInput matInput [placeholder]="globalFilterLabel" />
   </mat-form-field>
 
+  <inevitable-query-panel
+    [columnMetadata]="metadata.columns"
+  ></inevitable-query-panel>
+
+  <div>
+    filter examples
+    <ul>
+      <li>position > 2 and name contains 'chris'</li>
+    </ul>
+  </div>
+
   <table
     mat-table
     [dataSource]="dataSource"
